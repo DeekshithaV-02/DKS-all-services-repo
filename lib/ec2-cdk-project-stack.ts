@@ -82,7 +82,7 @@ export class Ec2CdkProjectStack extends cdk.Stack {
       value: lb.loadBalancerDnsName,
       description: 'ALB DNS Name',
     });
- 
+     //creating cloud watch
     // 6. CloudWatch Metric
     const cpuMetric = new cloudwatch.Metric({
       namespace: 'AWS/EC2',
