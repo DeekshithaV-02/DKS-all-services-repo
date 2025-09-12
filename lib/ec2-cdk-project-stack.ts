@@ -14,13 +14,13 @@ export class Ec2CdkProjectStack extends cdk.Stack {
     // 1. VPC
     console.log('🚀 Starting EC2 + ALB + ASG + CW stack deployment');
  
-    // 1. VPC
+    // 1. VPC  
     const vpc = new ec2.Vpc(this, 'Vpc', {
       maxAzs: 2,
     });
     console.log('✅ VPC created');
  
-    // 2. Security Group
+    // 2. Security Group  
     const securityGroup = new ec2.SecurityGroup(this, 'InstanceSG', {
       vpc,
       description: 'Allow HTTP and SSH',
@@ -123,7 +123,7 @@ export class Ec2CdkProjectStack extends cdk.Stack {
 
     // example resource
     // const queue = new sqs.Queue(this, 'Ec2CdkProjectQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
+    //   end of code
     // });
   }
 }
