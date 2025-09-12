@@ -29,6 +29,7 @@ export class Ec2CdkProjectStack extends cdk.Stack {
     const ami = ec2.MachineImage.latestAmazonLinux();
     console.log('✅ Amazon Linux AMI selected');
 
+    // Auto Scaling Group (ASG)
     const asg = new autoscaling.AutoScalingGroup(this, 'ASG', {
       vpc,
       instanceType: new ec2.InstanceType('t3.micro'),
@@ -47,6 +48,29 @@ export class Ec2CdkProjectStack extends cdk.Stack {
       'echo "<h1>Deployed via CDK</h1>" > /var/www/html/index.html'
     );
     console.log('✅ Auto Scaling Group created and configured');
+
+    // **Standalone EC2 instance**
+    const ec2Instance = new ec2.Instance(this, 'StandaloneInstance', {
+      vpc,
+      instanceType: new ec2.InstanceType('t3.micro'),
+      machineImage: ami,
+      vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
+      securityGroup,
+      // Optional: provide your EC2 Key Pair name here if you want SSH access
+      // keyName: 'your-key-pair-name',
+    });
+
+    ec2Instance.addUserData(
+      'yum install -y httpd',
+      'systemctl enable httpd',
+      'systemctl start httpd',
+      'echo "<h1>Hello from standalone EC2 instance</h1>" > /var/www/html/index.html'
+    );
+
+    new cdk.CfnOutput(this, 'StandaloneInstancePublicIP', {
+      value: ec2Instance.instancePublicIp,
+      description: 'Public IP of the standalone EC2 instance',
+    });
 
     const lb = new elbv2.ApplicationLoadBalancer(this, 'ALB', {
       vpc,
@@ -108,8 +132,7 @@ export class Ec2CdkProjectStack extends cdk.Stack {
 
     console.log('✅ Auto Scaling policies configured');
 
-    // ✅ ✅ ✅ NEWLY ADDED ✅ ✅ ✅
-    // 📦 10. Create an S3 Bucket
+    // S3 Bucket
     const bucket = new s3.Bucket(this, 'MyTestBucket', {
       versioned: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY, // Only for dev/testing — don't use in prod
@@ -118,7 +141,6 @@ export class Ec2CdkProjectStack extends cdk.Stack {
 
     console.log('✅ S3 Bucket created');
 
-    // Optional output
     new cdk.CfnOutput(this, 'S3BucketName', {
       value: bucket.bucketName,
       description: 'S3 Bucket Name',
