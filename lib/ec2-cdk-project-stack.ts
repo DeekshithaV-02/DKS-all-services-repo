@@ -1,16 +1,17 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import * as ec2 from 'aws-cdk-lib/aws-ec2';
+/*import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as autoscaling from 'aws-cdk-lib/aws-autoscaling';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
-import * as s3 from 'aws-cdk-lib/aws-s3'; // ✅ ADDED: S3 module import
+import * as s3 from 'aws-cdk-lib/aws-s3'; // ✅ ADDED: S3 module import*/
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'; // ✅ ADDED: DynamoDB module import
 
 export class Ec2CdkProjectStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    console.log('🚀 Starting EC2 + ALB + ASG + CW stack deployment');
+   /* console.log('🚀 Starting EC2 + ALB + ASG + CW stack deployment');
 
     const vpc = new ec2.Vpc(this, 'Vpc', {
       maxAzs: 2,
@@ -144,8 +145,46 @@ export class Ec2CdkProjectStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'S3BucketName', {
       value: bucket.bucketName,
       description: 'S3 Bucket Name',
-    });
+    });*/
 
+ // DynamoDB Table
+    const table = new dynamodb.Table(this, 'MyDynamoDBTable', {
+      partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    });
+ 
+    new cdk.CfnOutput(this, 'DynamoDBTableName', {
+      value: table.tableName,
+      description: 'DynamoDB Table Name',
+    });
+ 
     console.log('🎉 Stack setup complete');
   }
 }
+ 
+// ✅ App entry point with MULTI-REGION deployment
+const app = new cdk.App();
+ 
+// Deploy to us-east-1
+new Ec2CdkProjectStack(app, 'Ec2CdkProjectStackUSEast1', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: 'us-east-1',
+  },
+});
+ 
+// Deploy to us-east-2
+new Ec2CdkProjectStack(app, 'Ec2CdkProjectStackUSEast2', {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: 'us-east-2',
+  },
+});
+    // example resource
+    // const queue = new sqs.Queue(this, 'MultiRegQueue', {
+    //   visibilityTimeout: cdk.Duration.seconds(300)
+  // });
+  
+    console.log('🎉 Stack setup complete');
+  
