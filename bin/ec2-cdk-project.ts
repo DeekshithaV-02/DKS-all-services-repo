@@ -9,12 +9,11 @@ new Ec2CdkProjectStack(app, 'Ec2CdkProjectStackUSEast1', {
       region: 'us-east-1',
     },
   });
-
-   /* Deploy to us-east-2
-   new Ec2CdkProjectStack(app, 'Ec2CdkProjectStackUSEast2', {
+   // Deploy to us-east-2
+   /* new Ec2CdkProjectStack(app, 'Ec2CdkProjectStackUSEast2', {
      env: {
        account: process.env.CDK_DEFAULT_ACCOUNT,
        region: 'us-east-2',
      },
-   });*/
- 
+   });
+ */

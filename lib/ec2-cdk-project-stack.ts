@@ -148,7 +148,7 @@ export class Ec2CdkProjectStack extends cdk.Stack {
     });*/
 
  // DynamoDB Table
-   const table = new dynamodb.Table(this, 'MyDynamoDBTable', {
+    const table = new dynamodb.Table(this, 'MyDynamoDBTable', {
       tableName: 'MyDynamoDBTable', // ✅ ensures consistent name
       partitionKey: { name: 'id', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'version', type: dynamodb.AttributeType.NUMBER }, // ✅ Added version as sort key
@@ -157,6 +157,7 @@ export class Ec2CdkProjectStack extends cdk.Stack {
       deletionProtection: true, // ✅ This enables deletion protection
       //removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
+ 
     new cdk.CfnOutput(this, 'DynamoDBTableName', {
       value: table.tableName,
       description: 'DynamoDB Table Name',
@@ -177,17 +178,17 @@ new Ec2CdkProjectStack(app, 'Ec2CdkProjectStackUSEast1', {
   },
 });
  
-/* Deploy to us-east-2
-new Ec2CdkProjectStack(app, 'Ec2CdkProjectStackUSEast2', {
+// Deploy to us-east-2
+/* new Ec2CdkProjectStack(app, 'Ec2CdkProjectStackUSEast2', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: 'us-east-2',
   },
-});*/
+});
     // example resource
     // const queue = new sqs.Queue(this, 'MultiRegQueue', {
     //   visibilityTimeout: cdk.Duration.seconds(300)
   // });
-  
+  */
     console.log('🎉 Stack setup complete');
   
